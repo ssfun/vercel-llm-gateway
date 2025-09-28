@@ -1,0 +1,56 @@
+{
+  "buildCommand": "npm run build",
+  "framework": null,
+  "functions": {
+    "api/gateway.ts": {
+      "runtime": "edge",
+      "maxDuration": 25
+    },
+    "api/background.ts": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 300,
+      "memory": 1024
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/gateway/:path*",
+      "destination": "/api/gateway"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/gateway"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/gateway/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, X-Requested-With, X-Api-Key, X-Request-Id, anthropic-version, anthropic-beta, openai-organization, openai-beta"
+        },
+        {
+          "key": "Access-Control-Max-Age",
+          "value": "86400"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ]
+}
