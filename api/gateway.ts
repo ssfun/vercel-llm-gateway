@@ -3,6 +3,7 @@
  * 处理请求路由和流式响应
  */
 
+// Edge Runtime 配置
 export const config = {
   runtime: 'edge',
 };
