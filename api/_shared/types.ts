@@ -12,6 +12,7 @@ export interface ProxyConfig {
   defaultHeaders?: Record<string, string>;
   supportsStreaming?: boolean;
   allowFallback?: boolean;
+  retryable?: boolean;  // 添加这个属性
 }
 
 export interface RequestContext {
