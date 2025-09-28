@@ -172,11 +172,6 @@ export const BUILTIN_PROXIES: Record<string, ProxyConfig> = {
     host: "httpbin.org",
     retryable: true 
   },
-  chataw: { 
-    host: "api.chatanywhere.tech",
-    retryable: true,
-    retryableMethods: ["GET", "HEAD", "OPTIONS", "POST"]
-  },
 };
 
 // 加载自定义配置
