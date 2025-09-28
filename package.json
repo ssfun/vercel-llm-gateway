@@ -1,0 +1,30 @@
+{
+  "name": "llm-gateway",
+  "version": "1.0.0",
+  "description": "Hybrid API Gateway with Edge and Background processing",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "tsc --noEmit",
+    "deploy": "vercel --prod",
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.{ts,json,md}\""
+  },
+  "dependencies": {
+    "@vercel/node": "^3.0.11"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.55.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2",
+    "vercel": "^32.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
