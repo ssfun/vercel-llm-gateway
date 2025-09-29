@@ -32,15 +32,36 @@ export function sanitizePath(parts: string[]): string {
     .join('/');
 }
 
+/**
+ * 构建上游 URL - 修复 Gemini 特殊格式
+ */
 export function buildUpstreamURL(
   host: string,
   basePath: string | undefined,
   userPath: string,
   search: string
 ): string {
+  // 清理 basePath 和 userPath
   const cleanBase = basePath?.replace(/^\/|\/$/g, '') || '';
   const cleanUser = userPath.replace(/^\/|\/$/g, '');
+  
+  // 组合路径
   const fullPath = [cleanBase, cleanUser].filter(Boolean).join('/');
+  
+  // 特殊处理 Gemini API 的查询参数
+  if (host.includes('generativelanguage.googleapis.com')) {
+    // 解析现有的查询参数
+    const params = new URLSearchParams(search);
+    
+    // 移除错误添加的 path 参数
+    params.delete('path');
+    
+    // 重新构建查询字符串
+    const cleanSearch = params.toString() ? `?${params.toString()}` : '';
+    return `https://${host}${fullPath ? '/' + fullPath : ''}${cleanSearch}`;
+  }
+  
+  // 其他服务保持原样
   return `https://${host}${fullPath ? '/' + fullPath : ''}${search}`;
 }
 
@@ -194,13 +215,22 @@ export function createCorsHeaders(): Headers {
   return headers;
 }
 
+/**
+ * 解析和清理查询参数
+ */
 export function parseQueryParams(searchParams: URLSearchParams): Record<string, string> {
   const params: Record<string, string> = {};
   
-  // 白名单参数
-  const allowedParams = ['alt', 'key', 'access_token', 'upload_protocol', 'prettyPrint', 'fields'];
+  // Gemini API 允许的参数
+  const geminiAllowedParams = ['key', 'alt', 'access_token', 'upload_protocol', 'prettyPrint', 'fields'];
+  
+  // 通用允许的参数
+  const generalAllowedParams = ['stream', 'format', 'version'];
+  
+  const allowedParams = [...geminiAllowedParams, ...generalAllowedParams];
   
   for (const [key, value] of searchParams.entries()) {
+    // 过滤掉不应该传递的参数
     if (allowedParams.includes(key) || key.startsWith('$')) {
       params[key] = value;
     }
