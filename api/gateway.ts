@@ -45,17 +45,34 @@ async function handleInEdge(
   userPath: string,
   search: string
 ): Promise<Response> {
+  // 清理查询字符串，移除不需要的参数
+  const url = new URL(req.url);
+  const cleanParams = new URLSearchParams();
+  
+  // 只保留必要的查询参数
+  for (const [key, value] of url.searchParams.entries()) {
+    // 跳过内部使用的参数
+    if (key !== 'path' && key !== 'service') {
+      cleanParams.append(key, value);
+    }
+  }
+  
+  const cleanSearch = cleanParams.toString() ? `?${cleanParams.toString()}` : '';
+  
+  // 构建上游 URL
   const upstreamURL = buildUpstreamURL(
     proxy.host,
     proxy.basePath,
     userPath,
-    search
+    cleanSearch  // 使用清理后的查询字符串
   );
   
   logger.debug('Edge 处理请求', {
     reqId: context.reqId,
     service: context.service,
     upstream: upstreamURL,
+    originalSearch: search,
+    cleanSearch: cleanSearch,
   });
   
   const forwardHeaders = buildForwardHeaders(req.headers, proxy);
